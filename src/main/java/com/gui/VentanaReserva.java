@@ -17,7 +17,7 @@ public class VentanaReserva extends JFrame {
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
-        setSize(480, 700);
+        setSize(480, 750);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -72,18 +72,16 @@ public class VentanaReserva extends JFrame {
         spinPers.setPreferredSize(new Dimension(80, 25));
         main.add(spinPers, gbc);
 
-        // NUEVO CAMPO: TIPO DE COCINA (Basado en UD04 - Consistencia)
+        // Campo cocina
         gbc.gridy = 6; gbc.gridx = 0;
         main.add(new JLabel("Tipo de cocina:"), gbc);
-
         gbc.gridx = 1;
         String[] opcionesCocina = {"Bufé", "Carta", "Pedir cita con el chef", "No precisa"};
         comboCocina = new JComboBox<>(opcionesCocina);
         main.add(comboCocina, gbc);
 
-
         // --- SECCIÓN 3 extras
-        gbc.gridy = 6; gbc.gridx = 0; gbc.gridwidth = 2;
+        gbc.gridy = 7; gbc.gridx = 0; gbc.gridwidth = 2;
         panelExtra = new JPanel(new GridBagLayout());
         panelExtra.setBackground(new Color(245, 245, 245));
         panelExtra.setBorder(BorderFactory.createTitledBorder("Opciones Congreso"));
@@ -115,9 +113,10 @@ public class VentanaReserva extends JFrame {
         });
 
         // --- BOTÓN ---
-        gbc.gridy = 7; gbc.gridx = 0; gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.NONE; // El botón no se estira
+        gbc.gridy = 8; gbc.gridx = 0; gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(20, 5, 5, 5); // Un poco más de espacio arriba del botón
         BotonBK btn = new BotonBK("CONFIRMAR");
         main.add(btn, gbc);
 
@@ -125,6 +124,8 @@ public class VentanaReserva extends JFrame {
             // Verificamos ambos campos
             boolean nombreValido = ValidadorBK.validarNombre(txtNombre);
             boolean telValido = ValidadorBK.validarTelefono(txtTel);
+            boolean cocinaOk = ValidadorBK.validarCombo(comboCocina);
+            boolean tipoOk = ValidadorBK.validarCombo(comboTipo);
 
             if (nombreValido && telValido) {
                 // creamos bean
@@ -133,13 +134,15 @@ public class VentanaReserva extends JFrame {
                 // Rellenamos los datos
                 reservaBean.setNombre(txtNombre.getText());
                 reservaBean.setTelefono(txtTel.getText());
-                String tipoSeleccionado = comboTipo.getSelectedItem().toString();
-                reservaBean.setTipo(tipoSeleccionado);
+
+                // Uso de constantes para evitar NullPointerException
+                String tipoSel = String.valueOf(comboTipo.getSelectedItem());
+                reservaBean.setTipo(tipoSel);
                 reservaBean.setPersonas((int) spinPers.getValue());
-                reservaBean.setCocina(comboCocina.getSelectedItem().toString());
+                reservaBean.setCocina(String.valueOf(comboCocina.getSelectedItem()));
 
                 // Se rellenan los datos si es un congreso
-                if("Congreso".equals(tipoSeleccionado)){
+                if("Congreso".equals(tipoSel)){
                     reservaBean.setJornadas((int) spinJornadas.getValue());
                     reservaBean.setHabitaciones(checkHab.isSelected());
                 }
@@ -151,6 +154,9 @@ public class VentanaReserva extends JFrame {
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
                 // Mostramos el mensaje dinámico que explica el error
+                if (!cocinaOk) comboCocina.setBorder(BorderFactory.createLineBorder(Color.RED));
+                if (!tipoOk) comboTipo.setBorder(BorderFactory.createLineBorder(Color.RED));
+
                 String mensaje = ValidadorBK.obtenerMensajeError(txtNombre, txtTel,comboCocina,comboTipo);
                 JOptionPane.showMessageDialog(this, mensaje, "Datos no válidos", JOptionPane.WARNING_MESSAGE);
             }
