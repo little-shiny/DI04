@@ -12,8 +12,8 @@ import java.awt.event.MouseEvent;
 public class BotonBK extends JButton {
 
     // Colores corporativos de BK
-    private Color azulBK = new Color(0, 51, 102);
-    private Color azulHover = new Color(0, 102, 204);
+    private final Color azulBK = new Color(0, 51, 102);
+    private final Color azulHover = new Color(0, 102, 204);
 
     public BotonBK(String texto) {
         super(texto);

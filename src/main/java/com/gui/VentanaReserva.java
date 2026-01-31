@@ -108,7 +108,7 @@ public class VentanaReserva extends JFrame {
 
         // Lógica de activación
         comboTipo.addActionListener(e -> {
-            boolean esCongreso = comboTipo.getSelectedItem().equals("Congreso");
+            boolean esCongreso = "Congreso".equals(comboTipo.getSelectedItem());
             spinJornadas.setEnabled(esCongreso);
             checkHab.setEnabled(esCongreso);
             panelExtra.setBackground(esCongreso ? new Color(230, 240, 255) : new Color(245, 245, 245));
@@ -131,23 +131,7 @@ public class VentanaReserva extends JFrame {
 
             if (nombreValido && telValido) {
                 // creamos bean
-                ReservaBean reservaBean = new ReservaBean();
-
-                // Rellenamos los datos
-                reservaBean.setNombre(txtNombre.getText());
-                reservaBean.setTelefono(txtTel.getText());
-
-                // Uso de constantes para evitar NullPointerException
-                String tipoSel = String.valueOf(comboTipo.getSelectedItem());
-                reservaBean.setTipo(tipoSel);
-                reservaBean.setPersonas((int) spinPers.getValue());
-                reservaBean.setCocina(String.valueOf(comboCocina.getSelectedItem()));
-
-                // Se rellenan los datos si es un congreso
-                if("Congreso".equals(tipoSel)){
-                    reservaBean.setJornadas((int) spinJornadas.getValue());
-                    reservaBean.setHabitaciones(checkHab.isSelected());
-                }
+                ReservaBean reservaBean = rellenarBean();
 
                 // Mostramos el toString del bean
                 JOptionPane.showMessageDialog(this,
@@ -166,6 +150,28 @@ public class VentanaReserva extends JFrame {
 
         add(new JScrollPane(main));
     }
+
+    private ReservaBean rellenarBean() {
+        ReservaBean reservaBean = new ReservaBean();
+
+        // Rellenamos los datos
+        reservaBean.setNombre(txtNombre.getText());
+        reservaBean.setTelefono(txtTel.getText());
+
+        // Uso de constantes para evitar NullPointerException
+        String tipoSel = String.valueOf(comboTipo.getSelectedItem());
+        reservaBean.setTipo(tipoSel);
+        reservaBean.setPersonas((int) spinPers.getValue());
+        reservaBean.setCocina(String.valueOf(comboCocina.getSelectedItem()));
+
+        // Se rellenan los datos si es un congreso
+        if("Congreso".equals(tipoSel)){
+            reservaBean.setJornadas((int) spinJornadas.getValue());
+            reservaBean.setHabitaciones(checkHab.isSelected());
+        }
+        return reservaBean;
+    }
+
     private JLabel crearSubtitulo(String texto) {
         JLabel l = new JLabel(texto);
         l.setFont(new Font("SansSerif", Font.BOLD, 13));

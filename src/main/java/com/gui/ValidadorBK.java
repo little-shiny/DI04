@@ -16,13 +16,13 @@ public class ValidadorBK {
      * - más de 1 caracter
      * - solo letras (espacios, tildes y ñ)
      * - no numeros ni simbolos
-     * @param campo
+     * @param campo JTextField que se valida
      * @return true si datos son correctos
      */
     public static boolean validarNombre(JTextField campo) {
         String texto = campo.getText().trim();
 
-        // ^[a-zA-ZáéíóúÁÉÍÓÚñÑ ] -> Letras y espacios
+        // ^[a-zA-ZáéíóúÁÉÍÓÚñÑ] -> Letras y espacios
         // {2,} -> Mínimo 2 caracteres
         String regexNombre = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{2,}$";
 
