@@ -51,12 +51,28 @@ public class ValidadorBK {
     }
 
     /**
+     * Método que verifica que los comboBox se hayan seleccionado
+     * @param combo comboBox que se verifica
+     * @return true si está completado
+     */
+    public static boolean validarCombo(JComboBox<String> combo){
+        //Si no hay nada seleccionado en el combobox
+        if (combo.getSelectedIndex() == -1 || combo.getSelectedItem() == null){
+            combo.setBackground(COLOR_ERROR);
+            return false;
+        }
+        combo.setBackground(COLOR_OK);
+        return true;
+    }
+
+    /**
      * Método auxiliar que obtiene el mensaje de error segun el fallo
      * @param txtNombre nombre
      * @param txtTel telefono
      * @return error encontrado
      */
-    public static String obtenerMensajeError(JTextField txtNombre, JTextField txtTel) {
+    public static String obtenerMensajeError(JTextField txtNombre, JTextField txtTel, JComboBox<String> comboCocina,
+                                             JComboBox<String> comboTipo) {
         StringBuilder sb = new StringBuilder("Por favor, corrija los siguientes errores:\n");
 
         if (!validarNombre(txtNombre)) {
@@ -64,6 +80,12 @@ public class ValidadorBK {
         }
         if (!validarTelefono(txtTel)) {
             sb.append("- El teléfono debe tener exactamente 9 dígitos numéricos.\n");
+        }
+        if (!validarCombo(comboCocina)){
+            sb.append("- Complete los datos sobre el tipo de cocina\n");
+        }
+        if (!validarCombo(comboTipo)){
+            sb.append("- Complete los datos sobre el tipo de evento\n");
         }
 
         return sb.toString();

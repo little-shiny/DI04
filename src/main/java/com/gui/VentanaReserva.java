@@ -10,6 +10,7 @@ import java.awt.*;
 public class VentanaReserva extends JFrame {
     private JTextField txtNombre, txtTel;
     private JComboBox<String> comboTipo;
+    private JComboBox<String> comboCocina;
     private JSpinner spinPers, spinJornadas;
     private JCheckBox checkHab;
     private JPanel panelExtra;
@@ -77,7 +78,7 @@ public class VentanaReserva extends JFrame {
 
         gbc.gridx = 1;
         String[] opcionesCocina = {"Bufé", "Carta", "Pedir cita con el chef", "No precisa"};
-        JComboBox<String> comboCocina = new JComboBox<>(opcionesCocina);
+        comboCocina = new JComboBox<>(opcionesCocina);
         main.add(comboCocina, gbc);
 
 
@@ -150,7 +151,7 @@ public class VentanaReserva extends JFrame {
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
                 // Mostramos el mensaje dinámico que explica el error
-                String mensaje = ValidadorBK.obtenerMensajeError(txtNombre, txtTel);
+                String mensaje = ValidadorBK.obtenerMensajeError(txtNombre, txtTel,comboCocina,comboTipo);
                 JOptionPane.showMessageDialog(this, mensaje, "Datos no válidos", JOptionPane.WARNING_MESSAGE);
             }
         });
