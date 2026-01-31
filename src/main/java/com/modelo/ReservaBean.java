@@ -8,25 +8,51 @@ import java.io.Serializable;
  * Esto permite que los datos "sobrevivan" y puedan ser procesados luego.
  */
 public class ReservaBean implements Serializable {
-    private String cliente;
-    private String tipoEvento; // Banquete, Jornada o Congreso
+    public String nombre, telefono, tipo, cocina;
+    public int personas, jornadas;
+    public boolean habitaciones;
 
     public ReservaBean() {
     }
 
-    public String getCliente() {
-        return cliente;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public String getTipoEvento() {
-        return tipoEvento;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public void setTipoEvento(String tipo) {
-        this.tipoEvento = tipo;
+    public void setCocina(String cocina) {
+        this.cocina = cocina;
+    }
+
+    public void setPersonas(int personas) {
+        this.personas = personas;
+    }
+
+    public void setJornadas(int jornadas) {
+        this.jornadas = jornadas;
+    }
+
+    public void setHabitaciones(boolean habitaciones) {
+        this.habitaciones = habitaciones;
+    }
+
+    // Método para resumir la reserva al final
+    @Override
+    public String toString() {
+        return "RESUMEN DE RESERVA:\n" +
+                "--------------------------\n" +
+                "Responsable: " + nombre + "\n" +
+                "Teléfono: " + telefono + "\n" +
+                "Evento: " + tipo + "\n" +
+                "Asistentes: " + personas + "\n" +
+                "Cocina: " + cocina + "\n" +
+                (tipo.equals("Congreso") ? "Jornadas: " + jornadas + "\nHabitaciones: " + (habitaciones ? "Sí" : "No") : "");
     }
 }
