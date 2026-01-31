@@ -22,7 +22,7 @@ public class VentanaReserva extends JFrame {
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
-        setSize(500, 850); // Aumentado ligeramente para acomodar el nuevo campo
+        setSize(500, 850);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -54,13 +54,12 @@ public class VentanaReserva extends JFrame {
         lblLogo.setBorder(new EmptyBorder(0, 0, 15, 0));
         main.add(lblLogo, gbc);
 
-        // --- Fila 1: SECCIÓN 1 CONTACTO ---
+        // --- Fila 1: Título 1 ---
         gbc.gridy = 1;
         main.add(EstiloReserva.crearSubtitulo("1. DATOS DE CONTACTO"), gbc);
 
         // --- Fila 2: Nombre ---
-        gbc.gridwidth = 1;
-        gbc.gridy = 2; gbc.gridx = 0;
+        gbc.gridwidth = 1; gbc.gridy = 2; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Nombre Completo:"), gbc);
         gbc.gridx = 1;
         txtNombre = new JTextField(15);
@@ -73,7 +72,7 @@ public class VentanaReserva extends JFrame {
         txtTel = new JTextField(15);
         main.add(txtTel, gbc);
 
-        // --- Fila 4: Fecha (CORREGIDO) ---
+        // --- Fila 4: Fecha ---
         gbc.gridy = 4; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Fecha del evento:"), gbc);
         gbc.gridx = 1;
@@ -82,7 +81,7 @@ public class VentanaReserva extends JFrame {
         spinFecha.setValue(new Date());
         main.add(spinFecha, gbc);
 
-        // --- Fila 5: SECCIÓN 2 DETALLES (CORREGIDO de 4 a 5) ---
+        // --- Fila 5: Título 2 ---
         gbc.gridy = 5; gbc.gridx = 0; gbc.gridwidth = 2;
         main.add(EstiloReserva.crearSubtitulo("2. DETALLES DEL EVENTO"), gbc);
 
@@ -114,7 +113,6 @@ public class VentanaReserva extends JFrame {
         gbc.gridy = 9; gbc.gridx = 0; gbc.gridwidth = 2;
         panelExtra = new JPanel(new GridBagLayout());
         panelExtra.setBackground(Color.WHITE);
-
         TitledBorder border = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(EstiloReserva.BORDE_MATIZ), "Opciones Congreso");
         border.setTitleColor(EstiloReserva.AZUL_MARINO);
@@ -122,7 +120,6 @@ public class VentanaReserva extends JFrame {
 
         GridBagConstraints gbcExtra = new GridBagConstraints();
         gbcExtra.insets = new Insets(5, 5, 5, 5);
-
         spinJornadas = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
         spinJornadas.setEnabled(false);
         checkHab = new JCheckBox("Habitaciones");
@@ -136,42 +133,67 @@ public class VentanaReserva extends JFrame {
         panelExtra.add(spinJornadas, gbcExtra);
         gbcExtra.gridx = 0; gbcExtra.gridy = 1; gbcExtra.gridwidth = 2;
         panelExtra.add(checkHab, gbcExtra);
-
         main.add(panelExtra, gbc);
 
-        // Lógica de activación
         comboTipo.addActionListener(e -> {
             boolean esCongreso = "Congreso".equals(comboTipo.getSelectedItem());
             spinJornadas.setEnabled(esCongreso);
             checkHab.setEnabled(esCongreso);
         });
 
-        // --- Fila 10: BOTÓN ---
+        // --- Fila 10: BOTÓN CON VALIDACIÓN CORREGIDA ---
         gbc.gridy = 10; gbc.gridx = 0; gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(25, 5, 5, 5);
 
-        BotonBK btn = new BotonBK("CONFIRMAR");
-        btn.setOpaque(true);
-        btn.setContentAreaFilled(true);
-        btn.setBorderPainted(false);
-        btn.setBackground(EstiloReserva.NARANJA_BK);
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Arial", Font.BOLD, 14));
-        btn.setPreferredSize(new Dimension(180, 45));
+        BotonBK btn = getBotonBK();
 
         main.add(btn, gbc);
 
         btn.addActionListener(e -> {
-            if (ValidadorBK.validarNombre(txtNombre) && ValidadorBK.validarTelefono(txtTel) &&
-                    ValidadorBK.validarCombo(comboCocina) && ValidadorBK.validarCombo(comboTipo)) {
+            // Limpiar bordes de error previos
+            comboCocina.setBorder(UIManager.getBorder("ComboBox.border"));
+            comboTipo.setBorder(UIManager.getBorder("ComboBox.border"));
+
+            boolean nomOk = ValidadorBK.validarNombre(txtNombre);
+            boolean telOk = ValidadorBK.validarTelefono(txtTel);
+            boolean cocOk = ValidadorBK.validarCombo(comboCocina);
+            boolean tipOk = ValidadorBK.validarCombo(comboTipo);
+
+            if (nomOk && telOk && cocOk && tipOk) {
+                // TODO OK -> Muestra Diálogo de Éxito
                 ReservaBean rb = rellenarBean();
-                JOptionPane.showMessageDialog(this, rb.toString());
+                JOptionPane.showMessageDialog(this, rb.toString(), "Reserva Confirmada", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // ERROR -> Muestra Diálogo de Advertencia
+                if (!cocOk) comboCocina.setBorder(BorderFactory.createLineBorder(Color.RED));
+                if (!tipOk) comboTipo.setBorder(BorderFactory.createLineBorder(Color.RED));
+
+                String errorMsg = ValidadorBK.obtenerMensajeError(txtNombre, txtTel, comboCocina, comboTipo);
+                JOptionPane.showMessageDialog(this, errorMsg, "Datos no válidos", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         add(new JScrollPane(main));
+    }
+
+    private static BotonBK getBotonBK() {
+        BotonBK btn = new BotonBK("CONFIRMAR");
+
+        // Forzamos el color naranja anulando el estilo nativo
+        btn.setOpaque(true);
+        btn.setContentAreaFilled(true); // ¡Importante! Si es false, se verá blanco o gris
+        btn.setBorderPainted(false);
+
+        // Colores de EstiloReserva
+        btn.setBackground(EstiloReserva.NARANJA_BK);
+        btn.setForeground(Color.WHITE); // Texto en blanco para contraste
+
+        btn.setFont(new Font("Arial", Font.BOLD, 14));
+        btn.setPreferredSize(new Dimension(180, 45));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     private JLabel crearLabelEstilizada(String texto) {
@@ -185,7 +207,6 @@ public class VentanaReserva extends JFrame {
         rb.setNombre(txtNombre.getText());
         rb.setTelefono(txtTel.getText());
         rb.setFecha((Date) spinFecha.getValue());
-
         String tipoSel = String.valueOf(comboTipo.getSelectedItem());
         rb.setTipo(tipoSel);
         rb.setPersonas((int) spinPers.getValue());
