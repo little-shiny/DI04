@@ -12,30 +12,22 @@ import java.awt.event.MouseEvent;
 public class BotonBK extends JButton {
 
     // Colores corporativos de BK
-    private final Color azulNormal = new Color(0, 102, 204);
-    private final Color azulClaro = new Color(51, 153, 255);
+    private Color azulBK = new Color(0, 51, 102);
+    private Color azulHover = new Color(0, 102, 204);
 
     public BotonBK(String texto) {
         super(texto);
-
-        // Estilo visual inicial
-        setBackground(azulNormal);
+        setBackground(azulBK);
         setForeground(Color.WHITE);
         setFont(new Font("SansSerif", Font.BOLD, 14));
-        setFocusPainted(false); // Quita el recuadro feo al hacer clic
-        setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        setFocusPainted(false);
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // EFECTO HOVER: Para que el usuario sepa que puede interactuar
         addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(azulClaro); // Se ilumina al pasar el ratón
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(azulNormal); // Vuelve al color original
-            }
+            public void mouseEntered(MouseEvent e) { setBackground(azulHover); }
+            public void mouseExited(MouseEvent e) { setBackground(azulBK); }
         });
     }
+
+
 }
