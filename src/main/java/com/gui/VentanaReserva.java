@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.net.URL;
 
 public class VentanaReserva extends JFrame {
     private JTextField txtNombre, txtTel;
@@ -34,9 +35,27 @@ public class VentanaReserva extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // --- APORTACIÓN ORIGINAL: LOGO BK (Identidad Visual UD04) ---
+        // --- logo
         gbc.gridy = 0; gbc.gridx = 0; gbc.gridwidth = 2;
-        JLabel lblLogo = new JLabel("<html><div style='text-align:center;'><h1 style='color:#D37633; font-size:35px; font-family:Arial;'>BK</h1><p style='color:#003366; margin-top:-10px; font-weight:bold;'>SALÓN HABANA</p></div></html>");
+        JLabel lblLogo = new JLabel();
+
+        try {
+            //Buscamos la ruta del archivo dentro del proyecto
+            URL urlLogo = getClass().getResource("/LogoBK.png");
+
+            if (urlLogo != null) {
+                ImageIcon iconoOriginal = new ImageIcon(urlLogo);
+                //  Escalamos la imagen
+                Image imgEscalada = iconoOriginal.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                lblLogo.setIcon(new ImageIcon(imgEscalada));
+            } else {
+                //si no encuentra el archivo, pone un texto para no dejar el hueco vacío
+                lblLogo.setText("LOGO NO ENCONTRADO");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar el logo: " + e.getMessage());
+        }
+
         lblLogo.setHorizontalAlignment(JLabel.CENTER);
         lblLogo.setBorder(new EmptyBorder(0, 0, 15, 0));
         main.add(lblLogo, gbc);
