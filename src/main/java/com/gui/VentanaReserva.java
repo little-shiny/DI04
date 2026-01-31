@@ -61,6 +61,7 @@ public class VentanaReserva extends JFrame {
 
         gbc.gridx = 1;
         comboTipo = new JComboBox<>(new String[]{"Banquete", "Jornada", "Congreso"});
+        comboTipo.setSelectedIndex(-1); //forzamos que no haya seleccion para disparar validacion
         main.add(comboTipo, gbc);
 
         gbc.gridy = 5; gbc.gridx = 0;
@@ -78,6 +79,7 @@ public class VentanaReserva extends JFrame {
         gbc.gridx = 1;
         String[] opcionesCocina = {"Bufé", "Carta", "Pedir cita con el chef", "No precisa"};
         comboCocina = new JComboBox<>(opcionesCocina);
+        comboCocina.setSelectedIndex(-1); //forzamos que no haya seleccion para disparar validacion
         main.add(comboCocina, gbc);
 
         // --- SECCIÓN 3 extras
