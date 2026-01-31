@@ -42,16 +42,17 @@ public class ReservaBean implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("DETALLES DE LA RESERVA\n=========================\n");
-        sb.append("Cliente: ").append(nombre).append("\n");
-        sb.append("Teléfono: ").append(telefono).append("\n");
-        sb.append("Evento: ").append(tipo).append("\n");
-        sb.append("Nº Asistentes: ").append(personas).append("\n");
-        sb.append("Tipo de cocina: ").append(cocina);
+        sb.append("📋 RESUMEN DE RESERVA\n");
+        sb.append("------------------------------------\n");
+        sb.append("👤 Cliente: ").append(nombre).append("\n");
+        sb.append("📞 Teléfono: ").append(telefono).append("\n");
+        sb.append("🗓 Evento: ").append(tipo).append("\n");
+        sb.append("👥 Asistentes: ").append(personas).append("\n");
+        sb.append("🍳 Cocina: ").append(cocina).append("\n"); // Salto de línea añadido
 
-        if ("Congreso".equalsIgnoreCase(tipo)) {
-            sb.append("\nJornadas: ").append(jornadas);
-            sb.append("\nHabitaciones: ").append(habitaciones ? "Sí" : "No");
+        if ("Congreso".equals(tipo)) {
+            sb.append("⏳ Jornadas: ").append(jornadas).append("\n");
+            sb.append("🏨 Habitaciones: ").append(habitaciones ? "Solicitadas" : "No requiere");
         }
         return sb.toString();
     }
