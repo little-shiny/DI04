@@ -1,6 +1,7 @@
 package com.gui;
 
 import com.componentes.BotonBK;
+import com.modelo.ReservaBean;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -109,7 +110,39 @@ public class VentanaReserva extends JFrame {
         BotonBK btn = new BotonBK("CONFIRMAR");
         main.add(btn, gbc);
 
-        btn.addActionListener(e -> intentarEnviar());
+        btn.addActionListener(e -> {
+            // Verificamos ambos campos
+            boolean nombreValido = ValidadorBK.validarNombre(txtNombre);
+            boolean telValido = ValidadorBK.validarTelefono(txtTel);
+
+            if (nombreValido && telValido) {
+                // creamos bean
+                ReservaBean reservaBean = new ReservaBean();
+
+                // Rellenamos los datos
+                reservaBean.setNombre(txtNombre.getText());
+                reservaBean.setTelefono(txtTel.getText());
+                String tipoSeleccionado = comboTipo.getSelectedItem().toString();
+                reservaBean.setTipo(tipoSeleccionado);
+                reservaBean.setPersonas((int) spinPers.getValue());
+
+                // Se rellenan los datos si es un congreso
+                if("Congreso".equals(tipoSeleccionado)){
+                    reservaBean.setJornadas((int) spinJornadas.getValue());
+                    reservaBean.setHabitaciones(checkHab.isSelected());
+                }
+
+                // Mostramos el toString del bean
+                JOptionPane.showMessageDialog(this,
+                        reservaBean.toString(),
+                        "Reserva Confirmada",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Mostramos el mensaje dinámico que explica el error
+                String mensaje = ValidadorBK.obtenerMensajeError(txtNombre, txtTel);
+                JOptionPane.showMessageDialog(this, mensaje, "Datos no válidos", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
         add(new JScrollPane(main));
     }
