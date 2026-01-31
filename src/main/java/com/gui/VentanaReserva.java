@@ -14,127 +14,121 @@ public class VentanaReserva extends JFrame {
     private JPanel panelExtra;
 
     public VentanaReserva() {
-        setTitle("BK Salón Habana - Registro");
-        setSize(450, 700);
+        setTitle("BK Salón Habana - Formulario de Reserva");
+        setSize(500, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel main = new JPanel();
-        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
-        main.setBorder(new EmptyBorder(20, 30, 20, 30)); // Más margen lateral
+        // Panel principal con scroll
+        JPanel main = new JPanel(new GridBagLayout());
         main.setBackground(Color.WHITE);
+        main.setBorder(new EmptyBorder(20, 20, 20, 20));
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Configuración común para los componentes
+        gbc.insets = new Insets(5, 5, 5, 5); // Espaciado entre elementos
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Que rellenen su hueco
+        gbc.anchor = GridBagConstraints.WEST; // Alineados a la izquierda
 
         // --- SECCIÓN 1: CONTACTO ---
-        main.add(crearSubtitulo("1. DATOS DE CONTACTO"));
+        gbc.gridwidth = 2; // Ocupa dos columnas
+        main.add(crearSubtitulo("1. DATOS DE CONTACTO"), gbc);
 
-        txtNombre = crearTextField();
-        txtTel = crearTextField();
+        gbc.gridwidth = 1; // Volvemos a una columna
+        gbc.gridy = 1; gbc.gridx = 0;
+        main.add(new JLabel("Nombre Completo:"), gbc);
 
-        main.add(crearEtiquetaIzquierda("Nombre Completo:"));
-        main.add(txtNombre);
-        main.add(Box.createVerticalStrut(10));
-        main.add(crearEtiquetaIzquierda("Teléfono:"));
-        main.add(txtTel);
+        gbc.gridx = 1;
+        txtNombre = new JTextField(15);
+        main.add(txtNombre, gbc);
 
-        main.add(Box.createVerticalStrut(20));
+        gbc.gridy = 2; gbc.gridx = 0;
+        main.add(new JLabel("Teléfono:"), gbc);
+
+        gbc.gridx = 1;
+        txtTel = new JTextField(15);
+        main.add(txtTel, gbc);
 
         // --- SECCIÓN 2: DETALLES ---
-        main.add(crearSubtitulo("2. DETALLES DEL EVENTO"));
+        gbc.gridy = 3; gbc.gridx = 0; gbc.gridwidth = 2;
+        main.add(crearSubtitulo("2. DETALLES DEL EVENTO"), gbc);
 
+        gbc.gridwidth = 1;
+        gbc.gridy = 4; gbc.gridx = 0;
+        main.add(new JLabel("Tipo de Evento:"), gbc);
+
+        gbc.gridx = 1;
         comboTipo = new JComboBox<>(new String[]{"Banquete", "Jornada", "Congreso"});
-        ajustarComponente(comboTipo);
+        main.add(comboTipo, gbc);
 
-        // ajuste spinner más grande y fácil de leer
+        gbc.gridy = 5; gbc.gridx = 0;
+        main.add(new JLabel("Nº Asistentes:"), gbc);
+
+        gbc.gridx = 1;
+        // Ajustamos el Spinner para que no sea pequeño
         spinPers = new JSpinner(new SpinnerNumberModel(1, 1, 500, 1));
-        ajustarComponente(spinPers);
+        spinPers.setPreferredSize(new Dimension(80, 25));
+        main.add(spinPers, gbc);
 
-        main.add(crearEtiquetaIzquierda("Tipo de Evento:"));
-        main.add(comboTipo);
-        main.add(Box.createVerticalStrut(10));
-        main.add(crearEtiquetaIzquierda("Número de asistentes:"));
-        main.add(spinPers);
-
-        main.add(Box.createVerticalStrut(20));
-
-        // --- SECCIÓN 3: componentes adicionales
-        main.add(crearSubtitulo("3. OPCIONES DE CONGRESO"));
-        panelExtra = new JPanel();
-        panelExtra.setLayout(new BoxLayout(panelExtra, BoxLayout.Y_AXIS));
+        // --- SECCIÓN 3 extras
+        gbc.gridy = 6; gbc.gridx = 0; gbc.gridwidth = 2;
+        panelExtra = new JPanel(new GridBagLayout());
         panelExtra.setBackground(new Color(245, 245, 245));
-        panelExtra.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelExtra.setBorder(BorderFactory.createTitledBorder("Opciones Congreso"));
 
-        spinJornadas = new JSpinner(new SpinnerNumberModel(1, 1, 15, 1));
-        ajustarComponente(spinJornadas);
-        checkHab = new JCheckBox("Se necesitan habitaciones");
-        checkHab.setAlignmentX(Component.LEFT_ALIGNMENT);
+        GridBagConstraints gbcExtra = new GridBagConstraints();
+        gbcExtra.insets = new Insets(5, 5, 5, 5);
+        gbcExtra.anchor = GridBagConstraints.WEST;
 
+        spinJornadas = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
         spinJornadas.setEnabled(false);
+        checkHab = new JCheckBox("Habitaciones");
         checkHab.setEnabled(false);
 
-        panelExtra.add(new JLabel("Días del congreso:"));
-        panelExtra.add(spinJornadas);
-        panelExtra.add(checkHab);
-        panelExtra.setMaximumSize(new Dimension(400, 100));
-        main.add(panelExtra);
+        gbcExtra.gridx = 0; gbcExtra.gridy = 0;
+        panelExtra.add(new JLabel("Jornadas:"), gbcExtra);
+        gbcExtra.gridx = 1;
+        panelExtra.add(spinJornadas, gbcExtra);
+        gbcExtra.gridx = 0; gbcExtra.gridy = 1; gbcExtra.gridwidth = 2;
+        panelExtra.add(checkHab, gbcExtra);
 
-        // Lógica dinámica
+        main.add(panelExtra, gbc);
+
+        // Lógica de activación
         comboTipo.addActionListener(e -> {
             boolean esCongreso = comboTipo.getSelectedItem().equals("Congreso");
             spinJornadas.setEnabled(esCongreso);
             checkHab.setEnabled(esCongreso);
-            panelExtra.setBackground(esCongreso ? new Color(230, 245, 255) : new Color(245, 245, 245));
+            panelExtra.setBackground(esCongreso ? new Color(230, 240, 255) : new Color(245, 245, 245));
         });
 
         // --- BOTÓN ---
-        main.add(Box.createVerticalStrut(30));
-        BotonBK btnConfirmar = new BotonBK("CONFIRMAR RESERVA");
-        btnConfirmar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        main.add(btnConfirmar);
+        gbc.gridy = 7; gbc.gridx = 0; gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE; // El botón no se estira
+        gbc.anchor = GridBagConstraints.CENTER;
+        BotonBK btn = new BotonBK("CONFIRMAR");
+        main.add(btn, gbc);
 
-        btnConfirmar.addActionListener(e -> {
+        btn.addActionListener(e -> {
             if (ValidadorBK.validarCampo(txtNombre) && ValidadorBK.validarTelefono(txtTel)) {
                 mostrarResumen();
-            } else {
-                JOptionPane.showMessageDialog(this, "Datos en color rojo incorrectos");
             }
         });
 
         add(new JScrollPane(main));
     }
 
-
-    private JTextField crearTextField() {
-        JTextField tf = new JTextField();
-        ajustarComponente(tf);
-        return tf;
-    }
-
-    private void ajustarComponente(JComponent c) {
-        // Fijamos un tamaño máximo para que no se estiren demasiado (UD04 - Estética)
-        c.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-        c.setPreferredSize(new Dimension(200, 35));
-        c.setAlignmentX(Component.LEFT_ALIGNMENT);
-    }
-
     private JLabel crearSubtitulo(String texto) {
         JLabel l = new JLabel(texto);
         l.setFont(new Font("SansSerif", Font.BOLD, 13));
         l.setForeground(new Color(0, 51, 153));
-        l.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return l;
-    }
-
-    private JLabel crearEtiquetaIzquierda(String texto) {
-        JLabel l = new JLabel(texto);
-        l.setAlignmentX(Component.LEFT_ALIGNMENT);
+        l.setBorder(new EmptyBorder(15, 0, 5, 0));
         return l;
     }
 
     private void mostrarResumen() {
-        String resumen = "Reserva de: " + txtNombre.getText() + "\n" +
-                "Evento: " + comboTipo.getSelectedItem() + "\n" +
-                "Asistentes: " + spinPers.getValue();
-        JOptionPane.showMessageDialog(this, resumen, "Resumen BK", JOptionPane.INFORMATION_MESSAGE);
+        String res = "Reserva lista:\n- " + txtNombre.getText() + "\n- " + comboTipo.getSelectedItem();
+        JOptionPane.showMessageDialog(this, res, "Éxito BK", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
