@@ -16,7 +16,7 @@ public class VentanaReserva extends JFrame {
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
-        setSize(480, 650);
+        setSize(480, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -70,6 +70,16 @@ public class VentanaReserva extends JFrame {
         spinPers = new JSpinner(new SpinnerNumberModel(1, 1, 500, 1));
         spinPers.setPreferredSize(new Dimension(80, 25));
         main.add(spinPers, gbc);
+
+        // NUEVO CAMPO: TIPO DE COCINA (Basado en UD04 - Consistencia)
+        gbc.gridy = 6; gbc.gridx = 0;
+        main.add(new JLabel("Tipo de cocina:"), gbc);
+
+        gbc.gridx = 1;
+        String[] opcionesCocina = {"Bufé", "Carta", "Pedir cita con el chef", "No precisa"};
+        JComboBox<String> comboCocina = new JComboBox<>(opcionesCocina);
+        main.add(comboCocina, gbc);
+
 
         // --- SECCIÓN 3 extras
         gbc.gridy = 6; gbc.gridx = 0; gbc.gridwidth = 2;
@@ -125,6 +135,7 @@ public class VentanaReserva extends JFrame {
                 String tipoSeleccionado = comboTipo.getSelectedItem().toString();
                 reservaBean.setTipo(tipoSeleccionado);
                 reservaBean.setPersonas((int) spinPers.getValue());
+                reservaBean.setCocina(comboCocina.getSelectedItem().toString());
 
                 // Se rellenan los datos si es un congreso
                 if("Congreso".equals(tipoSeleccionado)){
@@ -145,28 +156,6 @@ public class VentanaReserva extends JFrame {
         });
 
         add(new JScrollPane(main));
-    }
-
-    private void intentarEnviar() {
-        boolean nombreOk = ValidadorBK.validarNombre(txtNombre);
-        boolean telOk = ValidadorBK.validarTelefono(txtTel);
-
-        if (!nombreOk || !telOk) {
-            // AVISO DE ERROR
-            JOptionPane.showMessageDialog(this,
-                    "Error: Revisa los campos marcados en rojo.\nEl teléfono debe tener 9 dígitos.",
-                    "Aviso de Validación",
-                    JOptionPane.WARNING_MESSAGE);
-        } else {
-            // TODO CORRECTO: Mostramos datos finales
-            String resumen = "RESERVA CONFIRMADA\n" +
-                    "-------------------\n" +
-                    "Cliente: " + txtNombre.getText() + "\n" +
-                    "Evento: " + comboTipo.getSelectedItem() + "\n" +
-                    "Personas: " + spinPers.getValue();
-            JOptionPane.showMessageDialog(this, resumen, "Reserva realizada con éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
     }
     private JLabel crearSubtitulo(String texto) {
         JLabel l = new JLabel(texto);
