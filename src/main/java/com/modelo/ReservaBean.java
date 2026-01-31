@@ -77,21 +77,22 @@ public class ReservaBean implements Serializable {
     // Método para resumir la reserva al final
     @Override
     public String toString() {
-        // Construimos el mensaje base
-        String mensaje = "DETALLES DE LA RESERVA\n" +
-                "======================\n" +
-                "Cliente: " + nombre + "\n" +
-                "Teléfono: " + telefono + "\n" +
-                "Evento: " + tipo + "\n" +
-                "Nº Asistentes: " + personas +
-                "Tipo de cocina " + cocina;
+        // Usamos StringBuilder para mayor eficiencia al concatenar
+        StringBuilder sb = new StringBuilder();
+        sb.append("DETALLES DE LA RESERVA\n");
+        sb.append("=========================\n");
+        sb.append("Cliente: ").append(nombre).append("\n");
+        sb.append("Teléfono: ").append(telefono).append("\n");
+        sb.append("Evento: ").append(tipo).append("\n");
+        sb.append("Nº Asistentes: ").append(personas).append("\n"); // Salto de línea corregido aquí
+        sb.append("Tipo de cocina: ").append(cocina); // Añadimos el nuevo campo con claridad
 
-        // Añadimos extras solo si es Congreso
-        if ("Congreso".equals(tipo)) {
-            mensaje += "\nNº Jornadas: " + jornadas +
-                    "\nAlojamiento: " + (habitaciones ? "Solicitado" : "No requerido");
+        // Mostramos extras solo si es Congreso (UD04 - Información relevante)
+        if ("Congreso".equalsIgnoreCase(tipo)) {
+            sb.append("\nJornadas: ").append(jornadas);
+            sb.append("\nHabitaciones: ").append(habitaciones ? "Sí" : "No");
         }
 
-        return mensaje;
+        return sb.toString();
     }
 }
