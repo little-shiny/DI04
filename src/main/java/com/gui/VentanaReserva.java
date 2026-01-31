@@ -22,14 +22,13 @@ public class VentanaReserva extends JFrame {
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
-        setSize(500, 820);
+        setSize(500, 850); // Aumentado ligeramente para acomodar el nuevo campo
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel main = new JPanel(new GridBagLayout());
         main.setBackground(EstiloReserva.FONDO_CREMA);
 
-        //Creamos un borde sutil para el contenedor principal
         main.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(EstiloReserva.BORDE_MATIZ, 2),
                 new EmptyBorder(20, 25, 20, 25)
@@ -40,7 +39,7 @@ public class VentanaReserva extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // --- Logo ---
+        // --- Fila 0: Logo ---
         gbc.gridy = 0; gbc.gridx = 0; gbc.gridwidth = 2;
         JLabel lblLogo = new JLabel();
         try {
@@ -50,74 +49,72 @@ public class VentanaReserva extends JFrame {
                 Image imgEscalada = iconoOriginal.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
                 lblLogo.setIcon(new ImageIcon(imgEscalada));
             }
-        } catch (Exception e) { /* Fallback */ }
+        } catch (Exception e) { }
         lblLogo.setHorizontalAlignment(JLabel.CENTER);
         lblLogo.setBorder(new EmptyBorder(0, 0, 15, 0));
         main.add(lblLogo, gbc);
 
-        // --- SECCIÓN 1: CONTACTO ---
+        // --- Fila 1: SECCIÓN 1 CONTACTO ---
         gbc.gridy = 1;
         main.add(EstiloReserva.crearSubtitulo("1. DATOS DE CONTACTO"), gbc);
 
+        // --- Fila 2: Nombre ---
         gbc.gridwidth = 1;
         gbc.gridy = 2; gbc.gridx = 0;
-        main.add(crearLabelEstilizada("Nombre Completo:"), gbc); // USO DE FUENTE_LABEL
-
+        main.add(crearLabelEstilizada("Nombre Completo:"), gbc);
         gbc.gridx = 1;
         txtNombre = new JTextField(15);
         main.add(txtNombre, gbc);
 
+        // --- Fila 3: Teléfono ---
         gbc.gridy = 3; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Teléfono:"), gbc);
-
         gbc.gridx = 1;
         txtTel = new JTextField(15);
         main.add(txtTel, gbc);
 
+        // --- Fila 4: Fecha (CORREGIDO) ---
         gbc.gridy = 4; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Fecha del evento:"), gbc);
-
         gbc.gridx = 1;
-        // Configuramos el Spinner para manejar fechas
         spinFecha = new JSpinner(new SpinnerDateModel());
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spinFecha, "dd/MM/yyyy");
-        spinFecha.setEditor(dateEditor);
-        spinFecha.setValue(new Date()); // Fecha actual por defecto
+        spinFecha.setEditor(new JSpinner.DateEditor(spinFecha, "dd/MM/yyyy"));
+        spinFecha.setValue(new Date());
         main.add(spinFecha, gbc);
 
-        // --- SECCIÓN 2: DETALLES ---
-        gbc.gridy = 4; gbc.gridx = 0; gbc.gridwidth = 2;
+        // --- Fila 5: SECCIÓN 2 DETALLES (CORREGIDO de 4 a 5) ---
+        gbc.gridy = 5; gbc.gridx = 0; gbc.gridwidth = 2;
         main.add(EstiloReserva.crearSubtitulo("2. DETALLES DEL EVENTO"), gbc);
 
+        // --- Fila 6: Tipo Evento ---
         gbc.gridwidth = 1;
-        gbc.gridy = 5; gbc.gridx = 0;
+        gbc.gridy = 6; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Tipo de Evento:"), gbc);
-
         gbc.gridx = 1;
         comboTipo = new JComboBox<>(new String[]{"Banquete", "Jornada", "Congreso"});
         comboTipo.setSelectedIndex(-1);
         main.add(comboTipo, gbc);
 
-        gbc.gridy = 6; gbc.gridx = 0;
+        // --- Fila 7: Asistentes ---
+        gbc.gridy = 7; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Nº Asistentes:"), gbc);
-
         gbc.gridx = 1;
         spinPers = new JSpinner(new SpinnerNumberModel(1, 1, 500, 1));
         main.add(spinPers, gbc);
 
-        gbc.gridy = 7; gbc.gridx = 0;
+        // --- Fila 8: Cocina ---
+        gbc.gridy = 8; gbc.gridx = 0;
         main.add(crearLabelEstilizada("Tipo de cocina:"), gbc);
         gbc.gridx = 1;
         comboCocina = new JComboBox<>(new String[]{"Bufé", "Carta", "Chef", "No precisa"});
         comboCocina.setSelectedIndex(-1);
         main.add(comboCocina, gbc);
 
-        // --- SECCIÓN 3: EXTRAS ---
-        gbc.gridy = 8; gbc.gridx = 0; gbc.gridwidth = 2;
+        // --- Fila 9: SECCIÓN 3 EXTRAS ---
+        gbc.gridy = 9; gbc.gridx = 0; gbc.gridwidth = 2;
         panelExtra = new JPanel(new GridBagLayout());
         panelExtra.setBackground(Color.WHITE);
 
-        // Matiz en el borde del panel extra
         TitledBorder border = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(EstiloReserva.BORDE_MATIZ), "Opciones Congreso");
         border.setTitleColor(EstiloReserva.AZUL_MARINO);
@@ -149,8 +146,8 @@ public class VentanaReserva extends JFrame {
             checkHab.setEnabled(esCongreso);
         });
 
-        // --- BOTÓN ---
-        gbc.gridy = 9; gbc.gridx = 0; gbc.gridwidth = 2;
+        // --- Fila 10: BOTÓN ---
+        gbc.gridy = 10; gbc.gridx = 0; gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(25, 5, 5, 5);
@@ -177,12 +174,9 @@ public class VentanaReserva extends JFrame {
         add(new JScrollPane(main));
     }
 
-    /**
-     * Método auxiliar para aplicar FUENTE_LABEL de EstiloReserva a todas las etiquetas
-     */
     private JLabel crearLabelEstilizada(String texto) {
         JLabel label = new JLabel(texto);
-        label.setFont(EstiloReserva.FUENTE_LABEL); // USO DE FUENTE_LABEL
+        label.setFont(EstiloReserva.FUENTE_LABEL);
         return label;
     }
 
@@ -190,7 +184,7 @@ public class VentanaReserva extends JFrame {
         ReservaBean rb = new ReservaBean();
         rb.setNombre(txtNombre.getText());
         rb.setTelefono(txtTel.getText());
-        rb.setFecha((Date) spinFecha.getValue()); // Mapeo de la fecha
+        rb.setFecha((Date) spinFecha.getValue());
 
         String tipoSel = String.valueOf(comboTipo.getSelectedItem());
         rb.setTipo(tipoSel);
