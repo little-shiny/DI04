@@ -9,6 +9,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.net.URL;
+import java.util.Date;
 
 public class VentanaReserva extends JFrame {
     private JTextField txtNombre, txtTel;
@@ -17,6 +18,7 @@ public class VentanaReserva extends JFrame {
     private JSpinner spinPers, spinJornadas;
     private JCheckBox checkHab;
     private JPanel panelExtra;
+    private JSpinner spinFecha;
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
@@ -71,6 +73,17 @@ public class VentanaReserva extends JFrame {
         gbc.gridx = 1;
         txtTel = new JTextField(15);
         main.add(txtTel, gbc);
+
+        gbc.gridy = 4; gbc.gridx = 0;
+        main.add(crearLabelEstilizada("Fecha del evento:"), gbc);
+
+        gbc.gridx = 1;
+        // Configuramos el Spinner para manejar fechas
+        spinFecha = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spinFecha, "dd/MM/yyyy");
+        spinFecha.setEditor(dateEditor);
+        spinFecha.setValue(new Date()); // Fecha actual por defecto
+        main.add(spinFecha, gbc);
 
         // --- SECCIÓN 2: DETALLES ---
         gbc.gridy = 4; gbc.gridx = 0; gbc.gridwidth = 2;
@@ -177,10 +190,14 @@ public class VentanaReserva extends JFrame {
         ReservaBean rb = new ReservaBean();
         rb.setNombre(txtNombre.getText());
         rb.setTelefono(txtTel.getText());
-        rb.setTipo(String.valueOf(comboTipo.getSelectedItem()));
+        rb.setFecha((Date) spinFecha.getValue()); // Mapeo de la fecha
+
+        String tipoSel = String.valueOf(comboTipo.getSelectedItem());
+        rb.setTipo(tipoSel);
         rb.setPersonas((int) spinPers.getValue());
         rb.setCocina(String.valueOf(comboCocina.getSelectedItem()));
-        if ("Congreso".equals(rb.getTipo())) {
+
+        if ("Congreso".equals(tipoSel)) {
             rb.setJornadas((int) spinJornadas.getValue());
             rb.setHabitaciones(checkHab.isSelected());
         }
