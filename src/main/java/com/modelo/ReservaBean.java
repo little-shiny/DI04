@@ -83,7 +83,8 @@ public class ReservaBean implements Serializable {
                 "Cliente: " + nombre + "\n" +
                 "Teléfono: " + telefono + "\n" +
                 "Evento: " + tipo + "\n" +
-                "Nº Asistentes: " + personas;
+                "Nº Asistentes: " + personas +
+                "Tipo de cocina " + cocina;
 
         // Añadimos extras solo si es Congreso
         if ("Congreso".equals(tipo)) {
