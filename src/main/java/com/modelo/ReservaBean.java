@@ -39,6 +39,10 @@ public class ReservaBean implements Serializable {
         this.habitaciones = h;
     }
 
+    public String getTipo(){
+        return this.tipo;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -56,4 +60,5 @@ public class ReservaBean implements Serializable {
         }
         return sb.toString();
     }
+
 }
