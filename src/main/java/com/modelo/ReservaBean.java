@@ -15,10 +15,6 @@ public class ReservaBean implements Serializable {
 
     // Getters y Setters
 
-    public Date getFecha() {
-        return fecha;
-    }
-
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
@@ -49,10 +45,6 @@ public class ReservaBean implements Serializable {
 
     public void setHabitaciones(boolean h) {
         this.habitaciones = h;
-    }
-
-    public String getTipo(){
-        return this.tipo;
     }
 
     @Override

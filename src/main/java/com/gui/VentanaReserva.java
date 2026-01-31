@@ -49,7 +49,11 @@ public class VentanaReserva extends JFrame {
                 Image imgEscalada = iconoOriginal.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
                 lblLogo.setIcon(new ImageIcon(imgEscalada));
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // Imprime el error en la consola
+            System.err.println("Error al cargar el logo: " + e.getMessage());
+            lblLogo.setText("BK Salón Habana");
+        }
         lblLogo.setHorizontalAlignment(JLabel.CENTER);
         lblLogo.setBorder(new EmptyBorder(0, 0, 15, 0));
         main.add(lblLogo, gbc);
