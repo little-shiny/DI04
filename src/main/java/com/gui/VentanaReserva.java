@@ -15,14 +15,14 @@ public class VentanaReserva extends JFrame {
 
     public VentanaReserva() {
         setTitle("BK Salón Habana - Formulario de Reserva");
-        setSize(500, 650);
+        setSize(480, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Panel principal con scroll
         JPanel main = new JPanel(new GridBagLayout());
         main.setBackground(Color.WHITE);
-        main.setBorder(new EmptyBorder(20, 20, 20, 20));
+        main.setBorder(new EmptyBorder(20, 25, 20, 25));
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Configuración común para los componentes
@@ -109,26 +109,38 @@ public class VentanaReserva extends JFrame {
         BotonBK btn = new BotonBK("CONFIRMAR");
         main.add(btn, gbc);
 
-        btn.addActionListener(e -> {
-            if (ValidadorBK.validarCampo(txtNombre) && ValidadorBK.validarTelefono(txtTel)) {
-                mostrarResumen();
-            }
-        });
+        btn.addActionListener(e -> intentarEnviar());
 
         add(new JScrollPane(main));
     }
 
+    private void intentarEnviar() {
+        boolean nombreOk = ValidadorBK.validarCampo(txtNombre);
+        boolean telOk = ValidadorBK.validarTelefono(txtTel);
+
+        if (!nombreOk || !telOk) {
+            // AVISO DE ERROR
+            JOptionPane.showMessageDialog(this,
+                    "Error: Revisa los campos marcados en rojo.\nEl teléfono debe tener 9 dígitos.",
+                    "Aviso de Validación",
+                    JOptionPane.WARNING_MESSAGE);
+        } else {
+            // TODO CORRECTO: Mostramos datos finales
+            String resumen = "RESERVA CONFIRMADA\n" +
+                    "-------------------\n" +
+                    "Cliente: " + txtNombre.getText() + "\n" +
+                    "Evento: " + comboTipo.getSelectedItem() + "\n" +
+                    "Personas: " + spinPers.getValue();
+            JOptionPane.showMessageDialog(this, resumen, "Reserva realizada con éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
     private JLabel crearSubtitulo(String texto) {
         JLabel l = new JLabel(texto);
         l.setFont(new Font("SansSerif", Font.BOLD, 13));
         l.setForeground(new Color(0, 51, 153));
         l.setBorder(new EmptyBorder(15, 0, 5, 0));
         return l;
-    }
-
-    private void mostrarResumen() {
-        String res = "Reserva lista:\n- " + txtNombre.getText() + "\n- " + comboTipo.getSelectedItem();
-        JOptionPane.showMessageDialog(this, res, "Éxito BK", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
