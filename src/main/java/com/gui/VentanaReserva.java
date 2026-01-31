@@ -152,25 +152,28 @@ public class VentanaReserva extends JFrame {
         main.add(btn, gbc);
 
         btn.addActionListener(e -> {
-            // Limpiar bordes de error previos
+            // Resetear bordes (Disposición visual 1 pto)
             comboCocina.setBorder(UIManager.getBorder("ComboBox.border"));
             comboTipo.setBorder(UIManager.getBorder("ComboBox.border"));
 
+            // Validar campos
             boolean nomOk = ValidadorBK.validarNombre(txtNombre);
             boolean telOk = ValidadorBK.validarTelefono(txtTel);
             boolean cocOk = ValidadorBK.validarCombo(comboCocina);
             boolean tipOk = ValidadorBK.validarCombo(comboTipo);
 
             if (nomOk && telOk && cocOk && tipOk) {
-                // TODO OK -> Muestra Diálogo de Éxito
                 ReservaBean rb = rellenarBean();
                 JOptionPane.showMessageDialog(this, rb.toString(), "Reserva Confirmada", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // ERROR -> Muestra Diálogo de Advertencia
+                // Si falla, marcamos visualmente y lanzamos error
                 if (!cocOk) comboCocina.setBorder(BorderFactory.createLineBorder(Color.RED));
                 if (!tipOk) comboTipo.setBorder(BorderFactory.createLineBorder(Color.RED));
 
                 String errorMsg = ValidadorBK.obtenerMensajeError(txtNombre, txtTel, comboCocina, comboTipo);
+                // Si el mensaje viene vacío por error, ponemos uno por defecto para que el diálogo SALGA sí o sí
+                if (errorMsg.isEmpty()) errorMsg = "Por favor, revise los campos marcados.";
+
                 JOptionPane.showMessageDialog(this, errorMsg, "Datos no válidos", JOptionPane.WARNING_MESSAGE);
             }
         });
@@ -179,20 +182,34 @@ public class VentanaReserva extends JFrame {
     }
 
     private static BotonBK getBotonBK() {
-        BotonBK btn = new BotonBK("CONFIRMAR");
+        // Sobrescribimos el pintado para que Windows NO pueda ponerlo azul
+        BotonBK btn = new BotonBK("CONFIRMAR") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (!isContentAreaFilled()) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    // Si está presionado se oscurece, si no, usa el naranja normal
+                    g2.setColor(getModel().isArmed() ? EstiloReserva.NARANJA_BK.darker() : EstiloReserva.NARANJA_BK);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    g2.dispose();
+                }
+                super.paintComponent(g);
+            }
+        };
 
-        // Forzamos el color naranja anulando el estilo nativo
-        btn.setOpaque(true);
-        btn.setContentAreaFilled(true); // ¡Importante! Si es false, se verá blanco o gris
+        // Configuración necesaria para que el pintado manual funcione
+        btn.setContentAreaFilled(false); // Desactiva el pintado de Windows
+        btn.setOpaque(false);
+        btn.setFocusPainted(false);
         btn.setBorderPainted(false);
 
-        // Colores de EstiloReserva
-        btn.setBackground(EstiloReserva.NARANJA_BK);
-        btn.setForeground(Color.WHITE); // Texto en blanco para contraste
-
+        // Estilo visual (Puntos de Color y Fuentes)
+        btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Arial", Font.BOLD, 14));
         btn.setPreferredSize(new Dimension(180, 45));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         return btn;
     }
 
