@@ -1,7 +1,7 @@
 package com.gui;
 
 import com.componentes.BotonBK;
-import com.modelo.ReservaBean;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -115,7 +115,7 @@ public class VentanaReserva extends JFrame {
     }
 
     private void intentarEnviar() {
-        boolean nombreOk = ValidadorBK.validarCampo(txtNombre);
+        boolean nombreOk = ValidadorBK.validarNombre(txtNombre);
         boolean telOk = ValidadorBK.validarTelefono(txtTel);
 
         if (!nombreOk || !telOk) {
